@@ -1,11 +1,18 @@
 import express, { Express } from "express";
+import { HTTP_STATUS } from "./core/constants";
+import { db } from "./db/db";
 
 export const setupApp = (app: Express) => {
-    app.use(express.json()); // middleware для парсинга JSON в теле запроса
+  app.use(express.json()); // middleware для парсинга JSON в теле запроса
 
-    // основной роут
-    app.get("/", (req, res) => {
-        res.status(200).send("Hello world!");
-    });
-    return app;
+  // основной роут
+  app.get("/", (req, res) => {
+    res.status(HTTP_STATUS.OK).send("Hello world!");
+  });
+
+  app.get("/drivers", (req, res) => {
+    res.status(HTTP_STATUS.OK).send(db.drivers);
+  });
+
+  return app;
 };
