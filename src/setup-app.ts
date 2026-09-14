@@ -1,6 +1,8 @@
-import express, { Express } from 'express';
+import express, { Express, Request } from 'express';
 import { HTTP_STATUS } from './core/constants';
 import { db } from './db/db';
+import { Driver } from './drivers/types/driver';
+import { DriverInputDto } from './drivers/dto/driver.input.dto';
 
 export const setupApp = (app: Express) => {
   app.use(express.json()); // middleware для парсинга JSON в теле запроса
@@ -21,6 +23,30 @@ export const setupApp = (app: Express) => {
       return;
     }
     res.status(HTTP_STATUS.OK).send(driver);
+  });
+
+  app.post('/drivers', (req: Request<{}, Driver, DriverInputDto>, res) => {
+    const lastDriverId = db.drivers[db.drivers.length - 1]?.id;
+    const newDriver: Driver = {
+      id: lastDriverId ? lastDriverId + 1 : 1,
+      name: req.body.name,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
+      vehicleMake: req.body.vehicleMake,
+      vehicleModel: req.body.vehicleModel,
+      vehicleYear: req.body.vehicleYear,
+      vehicleLicensePlate: req.body.vehicleLicensePlate,
+      vehicleDescription: req.body.vehicleDescription,
+      vehicleFeatures: req.body.vehicleFeatures,
+      createdAt: new Date(),
+    };
+    db.drivers.push(newDriver);
+    res.status(HTTP_STATUS.OK).send(newDriver);
+  });
+
+  app.delete('/drivers/all-data', (req, res) => {
+    db.drivers = [];
+    res.sendStatus(HTTP_STATUS.NO_CONTENT);
   });
 
   return app;
