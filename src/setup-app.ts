@@ -44,7 +44,7 @@ export const setupApp = (app: Express) => {
     res.status(HTTP_STATUS.OK).send(newDriver);
   });
 
-  app.delete('/drivers/all-data', (req, res) => {
+  app.delete('/testing/all-data', (req, res) => {
     db.drivers = [];
     res.sendStatus(HTTP_STATUS.NO_CONTENT);
   });
