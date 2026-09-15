@@ -1,7 +1,7 @@
 import { VENICLE_FEATURE } from '../core/constants';
-import { Driver } from '../drivers/types/driver';
+import { Videos } from '../videos/types/video';
 
-export const db: { drivers: Driver[] } = {
+export const db: { drivers: Videos[] } = {
   drivers: [
     {
       id: 1,

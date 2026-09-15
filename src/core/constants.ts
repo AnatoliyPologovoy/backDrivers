@@ -9,9 +9,3 @@ export const HTTP_STATUS = {
 
   INTERNAL_SERVER_ERROR: 500,
 };
-
-export const VENICLE_FEATURE = {
-  WIFI: 'WiFi',
-  CHILDSEAT: 'ChildSeat',
-  PET_FRIENDLY: 'Pet Friendly',
-} as const;

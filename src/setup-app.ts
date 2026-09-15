@@ -1,8 +1,6 @@
 import express, { Express, Request } from 'express';
 import { HTTP_STATUS } from './core/constants';
 import { db } from './db/db';
-import { Driver } from './drivers/types/driver';
-import { DriverInputDto } from './drivers/dto/driver.input.dto';
 
 export const setupApp = (app: Express) => {
   app.use(express.json()); // middleware для парсинга JSON в теле запроса
@@ -25,24 +23,30 @@ export const setupApp = (app: Express) => {
     res.status(HTTP_STATUS.OK).send(driver);
   });
 
-  app.post('/drivers', (req: Request<{}, Driver, DriverInputDto>, res) => {
-    const lastDriverId = db.drivers[db.drivers.length - 1]?.id;
-    const newDriver: Driver = {
-      id: lastDriverId ? lastDriverId + 1 : 1,
-      name: req.body.name,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
-      vehicleMake: req.body.vehicleMake,
-      vehicleModel: req.body.vehicleModel,
-      vehicleYear: req.body.vehicleYear,
-      vehicleLicensePlate: req.body.vehicleLicensePlate,
-      vehicleDescription: req.body.vehicleDescription,
-      vehicleFeatures: req.body.vehicleFeatures,
-      createdAt: new Date(),
-    };
-    db.drivers.push(newDriver);
-    res.status(HTTP_STATUS.OK).send(newDriver);
-  });
+  // app.post('/drivers', (req: Request<{}, Videos, VideosInputDto>, res) => {
+  //   const inputItem = req.body;
+  //   const errors: ValidationError[] = validationFieldsVideoInput(inputItem);
+  //   if (errors.length > 0) {
+  //     res.status(HTTP_STATUS.BAD_REQUEST).send();
+  //   }
+  //
+  //   const lastDriverId = db.drivers[db.drivers.length - 1]?.id;
+  //   const newDriver: Videos = {
+  //     id: lastDriverId ? lastDriverId + 1 : 1,
+  //     name: req.body.name,
+  //     phoneNumber: req.body.phoneNumber,
+  //     email: req.body.email,
+  //     vehicleMake: req.body.vehicleMake,
+  //     vehicleModel: req.body.vehicleModel,
+  //     vehicleYear: req.body.vehicleYear,
+  //     vehicleLicensePlate: req.body.vehicleLicensePlate,
+  //     vehicleDescription: req.body.vehicleDescription,
+  //     vehicleFeatures: req.body.vehicleFeatures,
+  //     createdAt: new Date(),
+  //   };
+  //   db.drivers.push(newDriver);
+  //   res.status(HTTP_STATUS.OK).send(newDriver);
+  // });
 
   app.delete('/testing/all-data', (req, res) => {
     db.drivers = [];
