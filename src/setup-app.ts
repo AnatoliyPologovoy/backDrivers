@@ -59,7 +59,7 @@ export const setupApp = (app: Express) => {
 
       db.videos.push(newVideo);
 
-      res.status(HTTP_STATUS.OK).send(newVideo);
+      res.status(HTTP_STATUS.CREATED).send(newVideo);
     },
   );
 
@@ -71,6 +71,11 @@ export const setupApp = (app: Express) => {
     ) => {
       const reqId = req.params.id;
       const body = req.body;
+
+      const isExists = db.videos.find((item) => item.id === +reqId);
+      if (!isExists) {
+        res.sendStatus(HTTP_STATUS.NOT_FOUND);
+      }
 
       const errors: ValidationError[] = validationUpdateVideoInput(body);
       if (errors.length > 0) {
@@ -87,6 +92,16 @@ export const setupApp = (app: Express) => {
       res.sendStatus(HTTP_STATUS.NO_CONTENT);
     },
   );
+
+  app.delete('/videos/:id', (req, res) => {
+    const reqId = req.params.id;
+    const isExists = db.videos.find((item) => item.id === +reqId);
+    if (!isExists) {
+      res.sendStatus(HTTP_STATUS.NOT_FOUND);
+    }
+    db.videos = db.videos.filter((item) => item.id !== +reqId);
+    res.sendStatus(HTTP_STATUS.NO_CONTENT);
+  });
 
   app.delete('/testing/all-data', (req, res) => {
     db.videos = [];

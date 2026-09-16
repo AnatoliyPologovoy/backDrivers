@@ -10,7 +10,7 @@ export const checkIsBoolean = (value: unknown): value is boolean =>
 export const checkIsNotArray = (value: unknown) => !Array.isArray(value);
 
 export const checkIsEmptyString = (value: unknown) =>
-  checkIsString(value) && value.trim().length === 0;
+  (checkIsString(value) && value.trim().length === 0) || !checkIsString(value);
 
 export const checkIsNotEmail = (value: unknown) =>
   checkIsString(value) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
