@@ -1,6 +1,17 @@
 import express, { Express, Request } from 'express';
 import { HTTP_STATUS } from './core/constants';
 import { db } from './db/db';
+import {
+  CreateVideoInputDto,
+  UpdateVideoInputDto,
+} from './videos/dto/videos.input.dto';
+import { ErrorResponse, ValidationError } from './core/types';
+import { Video } from './videos/types/video';
+import {
+  validationCreateVideoInput,
+  validationUpdateVideoInput,
+} from './videos/validation/video.input';
+import { getErrorResponse } from './core/utils';
 
 export const setupApp = (app: Express) => {
   app.use(express.json()); // middleware для парсинга JSON в теле запроса
@@ -10,46 +21,75 @@ export const setupApp = (app: Express) => {
     res.status(HTTP_STATUS.OK).send('Hello world!');
   });
 
-  app.get('/drivers', (req, res) => {
-    res.status(HTTP_STATUS.OK).send(db.drivers);
+  app.get('/hometask_01/api/videos', (req, res) => {
+    res.status(HTTP_STATUS.OK).send(db.videos);
   });
 
-  app.get('/drivers/:id', (req, res) => {
-    const driver = db.drivers.find((item) => item.id === +req.params.id);
-    if (!driver) {
+  app.get('/hometask_01/api/videos/:id', (req, res) => {
+    const video = db.videos.find((item) => item.id === +req.params.id);
+    if (!video) {
       res.sendStatus(HTTP_STATUS.NOT_FOUND);
       return;
     }
-    res.status(HTTP_STATUS.OK).send(driver);
+    res.status(HTTP_STATUS.OK).send(video);
   });
 
-  // app.post('/drivers', (req: Request<{}, Videos, VideosInputDto>, res) => {
-  //   const inputItem = req.body;
-  //   const errors: ValidationError[] = validationFieldsVideoInput(inputItem);
-  //   if (errors.length > 0) {
-  //     res.status(HTTP_STATUS.BAD_REQUEST).send();
-  //   }
-  //
-  //   const lastDriverId = db.drivers[db.drivers.length - 1]?.id;
-  //   const newDriver: Videos = {
-  //     id: lastDriverId ? lastDriverId + 1 : 1,
-  //     name: req.body.name,
-  //     phoneNumber: req.body.phoneNumber,
-  //     email: req.body.email,
-  //     vehicleMake: req.body.vehicleMake,
-  //     vehicleModel: req.body.vehicleModel,
-  //     vehicleYear: req.body.vehicleYear,
-  //     vehicleLicensePlate: req.body.vehicleLicensePlate,
-  //     vehicleDescription: req.body.vehicleDescription,
-  //     vehicleFeatures: req.body.vehicleFeatures,
-  //     createdAt: new Date(),
-  //   };
-  //   db.drivers.push(newDriver);
-  //   res.status(HTTP_STATUS.OK).send(newDriver);
-  // });
+  app.post(
+    '/hometask_01/api/videos',
+    (req: Request<{}, Video | ErrorResponse, CreateVideoInputDto>, res) => {
+      const inputItem = req.body;
+      const errors: ValidationError[] = validationCreateVideoInput(inputItem);
+      if (errors.length > 0) {
+        res.status(HTTP_STATUS.BAD_REQUEST).send(getErrorResponse(errors));
+      }
 
-  app.delete('/testing/all-data', (req, res) => {
-    db.drivers = [];
+      const lastId = db.videos[db.videos.length - 1]?.id;
+      const createdDate = new Date();
+      const publicationDate = new Date(createdDate);
+      publicationDate.setDate(publicationDate.getDate() + 1);
+
+      const newVideo: Video = {
+        ...inputItem,
+        id: lastId ? lastId + 1 : 1,
+        canBeDownloaded: false,
+        minAgeRestriction: null,
+        createdAt: createdDate.toISOString(),
+        publicationDate: publicationDate.toISOString(),
+      };
+
+      db.videos.push(newVideo);
+
+      res.status(HTTP_STATUS.OK).send(newVideo);
+    },
+  );
+
+  app.put(
+    '/hometask_01/api/videos/:id',
+    (
+      req: Request<{ id: string }, void | ErrorResponse, UpdateVideoInputDto>,
+      res,
+    ) => {
+      const reqId = req.params.id;
+      const body = req.body;
+
+      const errors: ValidationError[] = validationUpdateVideoInput(body);
+      if (errors.length > 0) {
+        res.status(HTTP_STATUS.BAD_REQUEST).send(getErrorResponse(errors));
+      }
+
+      db.videos = db.videos.map((item) => {
+        if (item.id === +reqId) {
+          return { ...item, ...body };
+        }
+        return item;
+      });
+
+      res.sendStatus(HTTP_STATUS.NO_CONTENT);
+    },
+  );
+
+  app.delete('/hometask_01/api/testing/all-data', (req, res) => {
+    db.videos = [];
     res.sendStatus(HTTP_STATUS.NO_CONTENT);
   });
 

@@ -1,46 +1,5 @@
-import { VENICLE_FEATURE } from '../core/constants';
-import { Videos } from '../videos/types/video';
+import { Video } from '../videos/types/video';
 
-export const db: { drivers: Videos[] } = {
-  drivers: [
-    {
-      id: 1,
-      name: 'Tom Rider',
-      phoneNumber: '123-456-7890',
-      email: 'tom.rider@example.com',
-      vehicleMake: 'BMW',
-      vehicleModel: 'Cabrio',
-      vehicleYear: 2020,
-      vehicleLicensePlate: 'ABC-32145',
-      vehicleDescription: null,
-      vehicleFeatures: [],
-      createdAt: new Date(),
-    },
-    {
-      id: 2,
-      name: 'Tom Rider',
-      phoneNumber: '123-456-7890',
-      email: 'tom.rider@example.com',
-      vehicleMake: 'Ford',
-      vehicleModel: 'Mustang Shelby GT',
-      vehicleYear: 2019,
-      vehicleLicensePlate: 'XYZ-21342',
-      vehicleDescription: null,
-      vehicleFeatures: [VENICLE_FEATURE.WIFI, VENICLE_FEATURE.CHILDSEAT],
-      createdAt: new Date(),
-    },
-    {
-      id: 3,
-      name: 'Tom Rider',
-      phoneNumber: '123-456-7890',
-      email: 'tom.rider@example.com',
-      vehicleMake: 'BMW',
-      vehicleModel: '18',
-      vehicleYear: 2021,
-      vehicleLicensePlate: 'LMN-31234',
-      vehicleDescription: null,
-      vehicleFeatures: [],
-      createdAt: new Date(),
-    },
-  ],
+export const db: { videos: Video[] } = {
+  videos: [],
 };

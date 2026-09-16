@@ -2,69 +2,73 @@ import express from 'express';
 
 import request from 'supertest';
 import { setupApp } from '../../../src/setup-app';
-import { DriverInputDto } from '../../../src/drivers/dto/driver.input.dto';
 import { HTTP_STATUS } from '../../../src/core/constants';
+import { Video } from '../../../src/videos/types/video';
+import {
+  CreateVideoInputDto,
+  UpdateVideoInputDto,
+} from '../../../src/videos/dto/videos.input.dto';
 
-describe('Driver API', () => {
+describe('Videos API', () => {
   const app = express();
   setupApp(app);
 
-  const testDriverData: DriverInputDto = {
-    name: 'Valentin',
-    phoneNumber: '123-456-7890',
-    email: 'valentin@example.com',
-    vehicleMake: 'BMW',
-    vehicleModel: 'X5',
-    vehicleYear: 2021,
-    vehicleLicensePlate: 'ABC-123',
-    vehicleDescription: null,
-    vehicleFeatures: [],
+  const mockVideo: Video = {
+    id: 1,
+    title: 'Introduction to TypeScript',
+    author: 'John Doe',
+    canBeDownloaded: false,
+    minAgeRestriction: null,
+    createdAt: '2026-09-15T20:26:01.667Z',
+    publicationDate: '2026-09-16T20:26:01.667Z',
+    availableResolutions: ['P720', 'P1080'],
   };
 
   beforeAll(async () => {
     await request(app)
-      .delete('/testing/all-data')
+      .delete('/hometask_01/api/testing/all-data')
       .expect(HTTP_STATUS.NO_CONTENT);
   });
 
-  it('should create driver; POST /drivers', async () => {
-    const newDriver: DriverInputDto = {
-      ...testDriverData,
-      name: 'Valentin',
-      phoneNumber: '123-456-7890',
-      email: 'valentin@example.com',
+  it('should create driver; POST /videos', async () => {
+    const newVideo: CreateVideoInputDto = {
+      ...mockVideo,
+      title: 'Valentin',
     };
 
-    await request(app).post('/drivers').send(newDriver).expect(HTTP_STATUS.OK);
+    await request(app)
+      .post('/hometask_01/api/videos')
+      .send(newVideo)
+      .expect(HTTP_STATUS.OK);
   });
 
-  it('should return drivers list; GET /drivers', async () => {
+  it('should return videos list; GET /videos', async () => {
     await request(app)
-      .post('/drivers')
-      .send({ ...testDriverData, name: 'Another Driver' })
+      .post('/hometask_01/api/videos')
+      .send({ ...mockVideo, title: 'Another Driver' })
       .expect(HTTP_STATUS.OK);
 
     await request(app)
-      .post('/drivers')
-      .send({ ...testDriverData, name: 'Another Driver2' })
+      .post('/hometask_01/api/videos')
+      .send({ ...mockVideo, title: 'Another Driver2' })
       .expect(HTTP_STATUS.OK);
 
-    const driverListResponse = await request(app)
-      .get('/drivers')
+    const videosListResponse = await request(app)
+      .get('/hometask_01/api/videos')
       .expect(HTTP_STATUS.OK);
 
-    expect(driverListResponse.body).toBeInstanceOf(Array);
-    expect(driverListResponse.body.length).toBeGreaterThanOrEqual(2);
+    expect(videosListResponse.body).toBeInstanceOf(Array);
+    expect(videosListResponse.body.length).toBeGreaterThanOrEqual(2);
   });
 
-  it('should return driver by id; GET /drivers/:id', async () => {
+  it('should return driver by id; GET /videos/:id', async () => {
     const createResponse = await request(app)
-      .post('/drivers')
-      .send({ ...testDriverData, name: 'Another Driver' })
+      .post('/hometask_01/api/videos')
+      .send({ ...mockVideo, title: 'Another Driver' })
       .expect(HTTP_STATUS.OK);
 
     const getResponse = await request(app)
-      .get(`/drivers/${createResponse.body.id}`)
+      .get(`/hometask_01/api/videos/${createResponse.body.id}`)
       .expect(HTTP_STATUS.OK);
 
     expect(getResponse.body).toEqual({

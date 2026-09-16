@@ -7,11 +7,14 @@ import {
   checkIsValidResolution,
   isValidISODate,
 } from './utils';
-import { UpdateVideoInputDto } from '../dto/videos.input.dto';
+import {
+  CreateVideoInputDto,
+  UpdateVideoInputDto,
+} from '../dto/videos.input.dto';
 
 /** Проверка полей на валидность */
 export const checkValidFieldsVideoInput = (
-  video: UpdateVideoInputDto,
+  video: UpdateVideoInputDto | CreateVideoInputDto,
 ): ValidationError[] => {
   const errors: ValidationError[] = [];
   Object.entries(video).forEach(([key, value]) => {
@@ -91,7 +94,7 @@ export const validationUpdateVideoInput = (
 
 /** Проверка при создании на наличие полей и их на валидность */
 export const validationCreateVideoInput = (
-  video: UpdateVideoInputDto,
+  video: CreateVideoInputDto,
 ): ValidationError[] => {
   const fields = ['title', 'author', 'availableResolutions'];
   const errors = getErrorsNotExistsFields(video, fields);
