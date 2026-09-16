@@ -59,11 +59,42 @@ export const checkValidFieldsVideoInput = (
   return errors;
 };
 
-/** Проверка на наличие полей и их на валидность */
+export const getErrorsNotExistsFields = <T extends Record<string, unknown>>(
+  data: T,
+  fields: Array<string>,
+) => {
+  const errors: ValidationError[] = [];
+  fields.forEach((field) => {
+    if (!data.hasOwnProperty(field)) {
+      errors.push({ field, message: `${field} is required` });
+    }
+  });
+  return errors;
+};
+
+/** Проверка при обновлении на наличие полей и их на валидность */
 export const validationUpdateVideoInput = (
   video: UpdateVideoInputDto,
 ): ValidationError[] => {
-  const errors: ValidationError[] = [];
+  const fields = [
+    'title',
+    'author',
+    'availableResolutions',
+    'canBeDownloaded',
+    'minAgeRestriction',
+    'publicationDate',
+  ];
+  const errors = getErrorsNotExistsFields(video, fields);
+  const extraErrors = checkValidFieldsVideoInput(video);
+  return errors.concat(extraErrors);
+};
 
-  return errors;
+/** Проверка при создании на наличие полей и их на валидность */
+export const validationCreateVideoInput = (
+  video: UpdateVideoInputDto,
+): ValidationError[] => {
+  const fields = ['title', 'author', 'availableResolutions'];
+  const errors = getErrorsNotExistsFields(video, fields);
+  const extraErrors = checkValidFieldsVideoInput(video);
+  return errors.concat(extraErrors);
 };
