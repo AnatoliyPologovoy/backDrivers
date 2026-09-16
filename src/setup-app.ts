@@ -21,11 +21,11 @@ export const setupApp = (app: Express) => {
     res.status(HTTP_STATUS.OK).send('Hello world!');
   });
 
-  app.get('/hometask_01/api/videos', (req, res) => {
+  app.get('/api/videos', (req, res) => {
     res.status(HTTP_STATUS.OK).send(db.videos);
   });
 
-  app.get('/hometask_01/api/videos/:id', (req, res) => {
+  app.get('/api/videos/:id', (req, res) => {
     const video = db.videos.find((item) => item.id === +req.params.id);
     if (!video) {
       res.sendStatus(HTTP_STATUS.NOT_FOUND);
@@ -35,7 +35,7 @@ export const setupApp = (app: Express) => {
   });
 
   app.post(
-    '/hometask_01/api/videos',
+    '/api/videos',
     (req: Request<{}, Video | ErrorResponse, CreateVideoInputDto>, res) => {
       const inputItem = req.body;
       const errors: ValidationError[] = validationCreateVideoInput(inputItem);
@@ -64,7 +64,7 @@ export const setupApp = (app: Express) => {
   );
 
   app.put(
-    '/hometask_01/api/videos/:id',
+    '/api/videos/:id',
     (
       req: Request<{ id: string }, void | ErrorResponse, UpdateVideoInputDto>,
       res,
@@ -88,7 +88,7 @@ export const setupApp = (app: Express) => {
     },
   );
 
-  app.delete('/hometask_01/api/testing/all-data', (req, res) => {
+  app.delete('/api/testing/all-data', (req, res) => {
     db.videos = [];
     res.sendStatus(HTTP_STATUS.NO_CONTENT);
   });
