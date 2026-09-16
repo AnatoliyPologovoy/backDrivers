@@ -26,7 +26,7 @@ describe('Videos API', () => {
 
   beforeAll(async () => {
     await request(app)
-      .delete('/api/testing/all-data')
+      .delete('/testing/all-data')
       .expect(HTTP_STATUS.NO_CONTENT);
   });
 
@@ -36,25 +36,22 @@ describe('Videos API', () => {
       title: 'Valentin',
     };
 
-    await request(app)
-      .post('/api/videos')
-      .send(newVideo)
-      .expect(HTTP_STATUS.OK);
+    await request(app).post('/videos').send(newVideo).expect(HTTP_STATUS.OK);
   });
 
   it('should return videos list; GET /videos', async () => {
     await request(app)
-      .post('/api/videos')
+      .post('/videos')
       .send({ ...mockVideo, title: 'Another Driver' })
       .expect(HTTP_STATUS.OK);
 
     await request(app)
-      .post('/api/videos')
+      .post('/videos')
       .send({ ...mockVideo, title: 'Another Driver2' })
       .expect(HTTP_STATUS.OK);
 
     const videosListResponse = await request(app)
-      .get('/api/videos')
+      .get('/videos')
       .expect(HTTP_STATUS.OK);
 
     expect(videosListResponse.body).toBeInstanceOf(Array);
@@ -63,12 +60,12 @@ describe('Videos API', () => {
 
   it('should return driver by id; GET /videos/:id', async () => {
     const createResponse = await request(app)
-      .post('/api/videos')
+      .post('/videos')
       .send({ ...mockVideo, title: 'Another Driver' })
       .expect(HTTP_STATUS.OK);
 
     const getResponse = await request(app)
-      .get(`/api/videos/${createResponse.body.id}`)
+      .get(`/videos/${createResponse.body.id}`)
       .expect(HTTP_STATUS.OK);
 
     expect(getResponse.body).toEqual({
