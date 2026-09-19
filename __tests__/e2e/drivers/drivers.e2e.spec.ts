@@ -36,19 +36,22 @@ describe('Videos API', () => {
       title: 'Valentin',
     };
 
-    await request(app).post('/videos').send(newVideo).expect(HTTP_STATUS.OK);
+    await request(app)
+      .post('/videos')
+      .send(newVideo)
+      .expect(HTTP_STATUS.CREATED);
   });
 
   it('should return videos list; GET /videos', async () => {
     await request(app)
       .post('/videos')
       .send({ ...mockVideo, title: 'Another Driver' })
-      .expect(HTTP_STATUS.OK);
+      .expect(HTTP_STATUS.CREATED);
 
     await request(app)
       .post('/videos')
       .send({ ...mockVideo, title: 'Another Driver2' })
-      .expect(HTTP_STATUS.OK);
+      .expect(HTTP_STATUS.CREATED);
 
     const videosListResponse = await request(app)
       .get('/videos')
@@ -62,7 +65,7 @@ describe('Videos API', () => {
     const createResponse = await request(app)
       .post('/videos')
       .send({ ...mockVideo, title: 'Another Driver' })
-      .expect(HTTP_STATUS.OK);
+      .expect(HTTP_STATUS.CREATED);
 
     const getResponse = await request(app)
       .get(`/videos/${createResponse.body.id}`)
