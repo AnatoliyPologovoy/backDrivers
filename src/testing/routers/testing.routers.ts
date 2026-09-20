@@ -1,6 +1,6 @@
 import express from 'express';
-import { HTTP_STATUS } from '../core/constants';
-import { db } from '../db/db';
+import { HTTP_STATUS } from '../../core/constants';
+import { db } from '../../db/db';
 
 export const testingRouter = express.Router({});
 
