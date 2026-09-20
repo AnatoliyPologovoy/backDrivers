@@ -1,17 +1,17 @@
 import { Request, Router } from 'express';
-import { HTTP_STATUS } from '../core/constants';
-import { db } from '../db/db';
-import { Video } from '../videos/types/video';
-import { ErrorResponse, ValidationError } from '../core/types';
+import { HTTP_STATUS } from '../../core/constants';
+import { db } from '../../db/db';
+import { Video } from '../types/video';
+import { ErrorResponse, ValidationError } from '../../core/types';
 import {
   CreateVideoInputDto,
   UpdateVideoInputDto,
-} from '../videos/dto/videos.input.dto';
+} from '../dto/videos.input.dto';
 import {
   validationCreateVideoInput,
   validationUpdateVideoInput,
-} from '../videos/validation/video.input';
-import { getErrorResponse } from '../core/utils';
+} from '../validation/video.input';
+import { getErrorResponse } from '../../core/utils';
 
 export const videosRouter = Router({});
 
