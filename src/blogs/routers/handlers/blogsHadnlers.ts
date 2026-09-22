@@ -20,3 +20,15 @@ export const createBlog = (
     .status(HTTP_STATUS.CREATED)
     .send(blogsRepositories.createBlog(req.body));
 };
+
+export const getBlogById = (
+  req: Request<{ id: string }, void, Blog>,
+  res: Response,
+) => {
+  const blog = blogsRepositories.getBlog(req.params.id);
+  if (blog) {
+    return res.status(HTTP_STATUS.OK).send(blog);
+  } else {
+    return res.sendStatus(HTTP_STATUS.NOT_FOUND);
+  }
+};

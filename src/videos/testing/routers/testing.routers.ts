@@ -6,5 +6,6 @@ export const testingRouter = express.Router({});
 
 testingRouter.delete('/all-data', (req, res) => {
   db.videos = [];
+  db.blogs = [];
   res.sendStatus(HTTP_STATUS.NO_CONTENT);
 });

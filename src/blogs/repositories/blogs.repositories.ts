@@ -19,4 +19,9 @@ export const blogsRepositories = {
 
     return newBlog;
   },
+
+  getBlog(id: string) {
+    const blog = db.blogs.find((blog) => blog.id === id);
+    return blog ?? null;
+  },
 };
