@@ -37,4 +37,8 @@ export const blogsRepositories = {
       return item;
     });
   },
+
+  deleteBlog(id: string) {
+    db.blogs = db.blogs.filter((blog) => blog.id !== id);
+  },
 };

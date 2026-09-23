@@ -45,3 +45,16 @@ export const updateById = (
     return res.sendStatus(HTTP_STATUS.NOT_FOUND);
   }
 };
+
+export const deleteById = (
+  req: Request<{ id: string }, void, void>,
+  res: Response,
+) => {
+  const isExistId = blogsRepositories.isExistId(req.params.id);
+  if (isExistId) {
+    blogsRepositories.deleteBlog(req.params.id);
+    return res.sendStatus(HTTP_STATUS.NO_CONTENT);
+  } else {
+    return res.sendStatus(HTTP_STATUS.NOT_FOUND);
+  }
+};

@@ -11,6 +11,7 @@ import {
   idValidation,
 } from '../validation/blog.validation';
 import { inputValidationResultMiddleware } from '../../core/middlewares/validation/input-validation-result.middleware';
+import { deleteById } from './handlers/blogsHadnlers';
 
 export const blogsRouters = Router();
 
@@ -40,4 +41,12 @@ blogsRouters.put(
   inputBlogBodyValidation,
   inputValidationResultMiddleware,
   updateById,
+);
+
+//delete
+blogsRouters.delete(
+  BLOGS_ROUTES.ID,
+  idValidation,
+  inputValidationResultMiddleware,
+  deleteById,
 );
