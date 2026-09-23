@@ -32,3 +32,16 @@ export const getBlogById = (
     return res.sendStatus(HTTP_STATUS.NOT_FOUND);
   }
 };
+
+export const updateById = (
+  req: Request<{ id: string }, void, BlogInput>,
+  res: Response,
+) => {
+  const isExistId = blogsRepositories.isExistId(req.params.id);
+  if (isExistId) {
+    blogsRepositories.updateBlog(req.params.id, req.body);
+    return res.sendStatus(HTTP_STATUS.NO_CONTENT);
+  } else {
+    return res.sendStatus(HTTP_STATUS.NOT_FOUND);
+  }
+};

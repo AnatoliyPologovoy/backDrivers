@@ -24,4 +24,17 @@ export const blogsRepositories = {
     const blog = db.blogs.find((blog) => blog.id === id);
     return blog ?? null;
   },
+
+  isExistId(id: string) {
+    return db.blogs.findIndex((blog) => blog.id === id) !== -1;
+  },
+
+  updateBlog(id: string, blog: BlogInput) {
+    db.blogs = db.blogs.map((item) => {
+      if (item.id === id) {
+        return { ...item, ...blog };
+      }
+      return item;
+    });
+  },
 };

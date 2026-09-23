@@ -4,26 +4,40 @@ import {
   createBlog,
   getAllBlogs,
   getBlogById,
+  updateById,
 } from './handlers/blogsHadnlers';
 import {
-  createBodyValidation,
+  inputBlogBodyValidation,
   idValidation,
 } from '../validation/blog.validation';
 import { inputValidationResultMiddleware } from '../../core/middlewares/validation/input-validation-result.middleware';
 
 export const blogsRouters = Router();
 
+//Get all
 blogsRouters.get(BLOGS_ROUTES.ROOT, getAllBlogs);
+
+//createBlog
 blogsRouters.post(
   BLOGS_ROUTES.ROOT,
-  createBodyValidation,
+  inputBlogBodyValidation,
   inputValidationResultMiddleware,
   createBlog,
 );
 
+//getBlogById
 blogsRouters.get(
   BLOGS_ROUTES.ID,
   idValidation,
   inputValidationResultMiddleware,
   getBlogById,
+);
+
+//updateById
+blogsRouters.put(
+  BLOGS_ROUTES.ID,
+  idValidation,
+  inputBlogBodyValidation,
+  inputValidationResultMiddleware,
+  updateById,
 );

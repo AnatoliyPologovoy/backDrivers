@@ -8,7 +8,7 @@ export const idValidation = param('id')
 
 const URL_REGEX =
   /^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/;
-export const createBodyValidation = checkSchema(
+export const inputBlogBodyValidation = checkSchema(
   {
     name: { exists: true, isLength: { options: { min: 1, max: 15 } } },
     description: { exists: true, isLength: { options: { min: 1, max: 500 } } },

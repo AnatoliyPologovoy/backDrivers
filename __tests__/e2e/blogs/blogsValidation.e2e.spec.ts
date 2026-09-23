@@ -3,12 +3,7 @@ import express from 'express';
 import request from 'supertest';
 import { setupApp } from '../../../src/setup-app';
 import { HTTP_STATUS } from '../../../src/core/constants';
-import { Video } from '../../../src/videos/types/video';
-import {
-  CreateVideoInputDto,
-  UpdateVideoInputDto,
-} from '../../../src/videos/dto/videos.input.dto';
-import { Blog } from '../../../src/blogs/types/blog';
+
 import { BlogInput } from '../../../src/blogs/types/blog.input.dto';
 
 describe('Blogs API', () => {
@@ -35,6 +30,51 @@ describe('Blogs API', () => {
       .expect(HTTP_STATUS.BAD_REQUEST);
 
     expect(res.body.errorsMessages[0].field).toMatch('websiteUrl');
+  });
+
+  it('check invalid name for POST', async () => {
+    const res = await request(app)
+      .post('/blogs')
+      .send({
+        ...mockBlog,
+        name: 'AoAwpGRu.M.hF3_tYl7tHmi AoAwpGRu AoAwpGRu AoAwpGRu', //over 15 length
+      })
+      .expect(HTTP_STATUS.BAD_REQUEST);
+
+    expect(res.body.errorsMessages[0].field).toMatch('name');
+  });
+
+  it('check invalid websiteUrl for PUT', async () => {
+    const createRes = await request(app)
+      .post('/blogs')
+      .send({
+        ...mockBlog,
+      });
+
+    const res = await request(app)
+      .put('/blogs/' + createRes.body.id)
+      .send({ ...mockBlog, websiteUrl: 'AoAwpGRu.M.hF3_tYl7tHmi' })
+      .expect(HTTP_STATUS.BAD_REQUEST);
+
+    expect(res.body.errorsMessages[0].field).toMatch('websiteUrl');
+  });
+
+  it('check invalid name for PUT', async () => {
+    const createRes = await request(app)
+      .post('/blogs')
+      .send({
+        ...mockBlog,
+      });
+
+    const res = await request(app)
+      .put('/blogs/' + createRes.body.id)
+      .send({
+        ...mockBlog,
+        name: 'AoAwpGRu.M.hF3_tYl7tHmi AoAwpGRu AoAwpGRu AoAwpGRu', //over 15 length
+      })
+      .expect(HTTP_STATUS.BAD_REQUEST);
+
+    expect(res.body.errorsMessages[0].field).toMatch('name');
   });
 
   // it('should return videos list; GET /videos', async () => {
