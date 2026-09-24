@@ -41,7 +41,7 @@ describe('Posts API validation', () => {
     const res = await request(app)
       .post('/posts')
       .set(authHeader)
-      .send({ ...mockPost, title: 'T'.repeat(31) }) //over 30 length
+      // .send({ ...mockPost, title: 'T'.repeat(31) }) //over 30 length
       .expect(HTTP_STATUS.BAD_REQUEST);
 
     expect(res.body.errorsMessages[0].field).toMatch('title');

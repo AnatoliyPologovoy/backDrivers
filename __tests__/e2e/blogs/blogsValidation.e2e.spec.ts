@@ -10,6 +10,11 @@ describe('Blogs API', () => {
   const app = express();
   setupApp(app);
 
+  // Basic-токен для admin:qwerty
+  const authHeader = {
+    Authorization: `Basic ${Buffer.from('admin:qwerty').toString('base64')}`,
+  };
+
   const mockBlog: BlogInput = {
     description: 'Introduction to TypeScript',
     name: 'John Doe ',
@@ -26,6 +31,7 @@ describe('Blogs API', () => {
   it('check invalid websiteUrl for POST', async () => {
     const res = await request(app)
       .post('/blogs')
+      .set(authHeader)
       .send({ ...mockBlog, websiteUrl: 'AoAwpGRu.M.hF3_tYl7tHmi' })
       .expect(HTTP_STATUS.BAD_REQUEST);
 
@@ -35,6 +41,7 @@ describe('Blogs API', () => {
   it('check invalid name for POST', async () => {
     const res = await request(app)
       .post('/blogs')
+      .set(authHeader)
       .send({
         ...mockBlog,
         name: 'AoAwpGRu.M.hF3_tYl7tHmi AoAwpGRu AoAwpGRu AoAwpGRu', //over 15 length
@@ -47,12 +54,14 @@ describe('Blogs API', () => {
   it('check invalid websiteUrl for PUT', async () => {
     const createRes = await request(app)
       .post('/blogs')
+      .set(authHeader)
       .send({
         ...mockBlog,
       });
 
     const res = await request(app)
       .put('/blogs/' + createRes.body.id)
+      .set(authHeader)
       .send({ ...mockBlog, websiteUrl: 'AoAwpGRu.M.hF3_tYl7tHmi' })
       .expect(HTTP_STATUS.BAD_REQUEST);
 
@@ -62,12 +71,14 @@ describe('Blogs API', () => {
   it('check invalid name for PUT', async () => {
     const createRes = await request(app)
       .post('/blogs')
+      .set(authHeader)
       .send({
         ...mockBlog,
       });
 
     const res = await request(app)
       .put('/blogs/' + createRes.body.id)
+      .set(authHeader)
       .send({
         ...mockBlog,
         name: 'AoAwpGRu.M.hF3_tYl7tHmi AoAwpGRu AoAwpGRu AoAwpGRu', //over 15 length
@@ -76,40 +87,4 @@ describe('Blogs API', () => {
 
     expect(res.body.errorsMessages[0].field).toMatch('name');
   });
-
-  // it('should return videos list; GET /videos', async () => {
-  //   await request(app)
-  //     .post('/videos')
-  //     .send({ ...mockVideo, title: 'Another Driver' })
-  //     .expect(HTTP_STATUS.CREATED);
-  //
-  //   await request(app)
-  //     .post('/videos')
-  //     .send({ ...mockVideo, title: 'Another Driver2' })
-  //     .expect(HTTP_STATUS.CREATED);
-  //
-  //   const videosListResponse = await request(app)
-  //     .get('/videos')
-  //     .expect(HTTP_STATUS.OK);
-  //
-  //   expect(videosListResponse.body).toBeInstanceOf(Array);
-  //   expect(videosListResponse.body.length).toBeGreaterThanOrEqual(2);
-  // });
-  //
-  // it('should return driver by id; GET /videos/:id', async () => {
-  //   const createResponse = await request(app)
-  //     .post('/videos')
-  //     .send({ ...mockVideo, title: 'Another Driver' })
-  //     .expect(HTTP_STATUS.CREATED);
-  //
-  //   const getResponse = await request(app)
-  //     .get(`/videos/${createResponse.body.id}`)
-  //     .expect(HTTP_STATUS.OK);
-  //
-  //   expect(getResponse.body).toEqual({
-  //     ...createResponse.body,
-  //     id: expect.any(Number),
-  //     createdAt: expect.any(String),
-  //   });
-  // });
 });

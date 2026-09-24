@@ -13,8 +13,9 @@ export const inputBlogBodyValidation = checkSchema(
     name: { exists: true, isLength: { options: { min: 1, max: 15 } } },
     description: { exists: true, isLength: { options: { min: 1, max: 500 } } },
     websiteUrl: {
+      trim: true,
       exists: true,
-      isLength: { options: { min: 1, max: 500 } },
+      isLength: { options: { min: 1, max: 100 } },
       matches: { options: URL_REGEX },
     },
   },

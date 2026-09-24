@@ -8,13 +8,22 @@ export const idValidation = param('id')
 
 export const inputPostBodyValidation = checkSchema(
   {
-    title: { exists: true, isLength: { options: { min: 1, max: 30 } } },
+    title: {
+      trim: true,
+      exists: true,
+      isLength: { options: { min: 1, max: 30 } },
+    },
     shortDescription: {
+      trim: true,
       exists: true,
       isLength: { options: { min: 1, max: 100 } },
     },
-    content: { exists: true, isLength: { options: { min: 1, max: 1000 } } },
-    blogId: { exists: true, isString: true },
+    content: {
+      trim: true,
+      exists: true,
+      isLength: { options: { min: 1, max: 1000 } },
+    },
+    blogId: { trim: true, exists: true, isString: true },
   },
   ['body'],
 );

@@ -10,6 +10,11 @@ describe('Blogs API', () => {
   const app = express();
   setupApp(app);
 
+  // Basic-токен для admin:qwerty
+  const authHeader = {
+    Authorization: `Basic ${Buffer.from('admin:qwerty').toString('base64')}`,
+  };
+
   const mockBlog: BlogInput = {
     description: 'Introduction to TypeScript',
     name: 'John Doe ',
@@ -26,6 +31,7 @@ describe('Blogs API', () => {
   it('should return blog by id; GET /blogs/:id', async () => {
     const createResponse = await request(app)
       .post('/blogs')
+      .set(authHeader)
       .send(mockBlog)
       .expect(HTTP_STATUS.CREATED);
 
@@ -39,11 +45,13 @@ describe('Blogs API', () => {
   it('should updated blog by id; GET /blogs/:id', async () => {
     const createResponse = await request(app)
       .post('/blogs')
+      .set(authHeader)
       .send(mockBlog)
       .expect(HTTP_STATUS.CREATED);
 
     const putResponse = await request(app)
       .put(`/blogs/${createResponse.body.id}`)
+      .set(authHeader)
       .send({ ...mockBlog, name: 'Tolix' })
       .expect(HTTP_STATUS.NO_CONTENT);
 
@@ -57,6 +65,7 @@ describe('Blogs API', () => {
   it('should delete blog by id; GET /blogs/:id', async () => {
     const createResponse = await request(app)
       .post('/blogs')
+      .set(authHeader)
       .send(mockBlog)
       .expect(HTTP_STATUS.CREATED);
 
@@ -68,6 +77,7 @@ describe('Blogs API', () => {
 
     const delResponse = await request(app)
       .delete(`/blogs/${createResponse.body.id}`)
+      .set(authHeader)
       .expect(HTTP_STATUS.NO_CONTENT);
 
     const newGetResponse = await request(app)
