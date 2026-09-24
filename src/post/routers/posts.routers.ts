@@ -1,54 +1,54 @@
 import { Router } from 'express';
-import { BLOGS_ROUTES } from './constants';
+import { POSTS_ROUTES } from './constants';
 import {
-  createBlog,
-  getAllBlogs,
-  getBlogById,
+  createPost,
+  deleteById,
+  getAllPosts,
+  getPostById,
   updateById,
-} from './handlers/blogsHadnlers';
+} from './handlers/posts.handlers';
 import {
-  inputBlogBodyValidation,
+  inputPostBodyValidation,
   idValidation,
-} from '../validation/blog.validation';
+} from '../validation/post.validation';
 import { inputValidationResultMiddleware } from '../../core/middlewares/validation/input-validation-result.middleware';
 import { superAdminGuardMiddleware } from '../../auth/middlewares/super-admin.guard.middleware';
-import { deleteById } from './handlers/blogsHadnlers';
 
-export const blogsRouters = Router();
+export const postsRouter = Router();
 
 //Get all
-blogsRouters.get(BLOGS_ROUTES.ROOT, getAllBlogs);
+postsRouter.get(POSTS_ROUTES.ROOT, getAllPosts);
 
-//createBlog
-blogsRouters.post(
-  BLOGS_ROUTES.ROOT,
+//createPost
+postsRouter.post(
+  POSTS_ROUTES.ROOT,
   superAdminGuardMiddleware,
-  inputBlogBodyValidation,
+  inputPostBodyValidation,
   inputValidationResultMiddleware,
-  createBlog,
+  createPost,
 );
 
-//getBlogById
-blogsRouters.get(
-  BLOGS_ROUTES.ID,
+//getPostById
+postsRouter.get(
+  POSTS_ROUTES.ID,
   idValidation,
   inputValidationResultMiddleware,
-  getBlogById,
+  getPostById,
 );
 
 //updateById
-blogsRouters.put(
-  BLOGS_ROUTES.ID,
+postsRouter.put(
+  POSTS_ROUTES.ID,
   superAdminGuardMiddleware,
   idValidation,
-  inputBlogBodyValidation,
+  inputPostBodyValidation,
   inputValidationResultMiddleware,
   updateById,
 );
 
 //delete
-blogsRouters.delete(
-  BLOGS_ROUTES.ID,
+postsRouter.delete(
+  POSTS_ROUTES.ID,
   superAdminGuardMiddleware,
   idValidation,
   inputValidationResultMiddleware,
