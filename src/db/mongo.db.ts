@@ -1,6 +1,6 @@
 import { Db, MongoClient } from 'mongodb';
 import { SETTINGS } from '../settings/config';
-// import { initCollections } from './collections';
+import { initCollections } from './collections';
 
 import dns from 'node:dns';
 // Устанавливаем DNS-серверы Cloudflare или Google
@@ -19,7 +19,7 @@ export async function runDB(url?: string): Promise<void> {
   const db: Db = client.db(SETTINGS.DB_NAME);
 
   // Инициализируем коллекции из подключённой базы.
-  // initCollections(db);
+  initCollections(db);
 
   try {
     await client.connect();
