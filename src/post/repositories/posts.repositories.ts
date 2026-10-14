@@ -7,12 +7,12 @@ export const postsRepositories = {
   findAllPosts(): Post[] {
     return db.posts;
   },
-  createPost(post: PostInput): Post {
+  async createPost(post: PostInput): Promise<Post> {
     const lastId = db.posts[db.posts.length - 1]?.id;
     const newId: string = String(lastId ? +lastId + 1 : 1);
 
     // имя блога берём по blogId, чтобы не доверять данным клиента
-    const blog = blogsRepositories.getBlog(post.blogId);
+    const blog = await blogsRepositories.getBlog(post.blogId);
 
     const newPost = {
       ...post,

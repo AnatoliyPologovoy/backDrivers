@@ -9,7 +9,7 @@
     "jest": "jest -i",
     "lint": "eslint --fix .",
     "format": "prettier --write .",
-    "localMongo": "mongod --dbpath D:/projects/dbBackDrivers"
+    "localMongo": "\"C:\\Users\\tolix\\mongoDB\\mongodb-win32-x86_64-windows-9.0.2\\bin\\mongod.exe\" --dbpath D:/projects/dbBackDrivers"
   },
   "dependencies": {
     "express": "^5.2.1",

@@ -1,44 +1,37 @@
 import { db } from '../../db/db';
 import { Blog } from '../types/blog';
 import { BlogInput } from '../types/blog.input.dto';
+import { blogsCollection } from '../../db/collections';
+import { ObjectId, WithId } from 'mongodb';
 
 export const blogsRepositories = {
-  findAllBlogs(): Blog[] {
-    return db.blogs;
-  },
-  createBlog(blog: BlogInput): Blog {
-    const lastId = db.blogs[db.blogs.length - 1]?.id;
-    const newId: string = String(lastId ? +lastId + 1 : 1);
-
-    const newBlog = {
-      ...blog,
-      id: newId,
-    };
-
-    db.blogs.push(newBlog);
-
-    return newBlog;
+  async findAllBlogs(): Promise<WithId<Blog>[]> {
+    return blogsCollection.find().toArray();
   },
 
-  getBlog(id: string) {
-    const blog = db.blogs.find((blog) => blog.id === id);
-    return blog ?? null;
+  async createBlog(blog: Blog): Promise<WithId<Blog>> {
+    const insertResult = await blogsCollection.insertOne(blog);
+    return { ...blog, _id: insertResult.insertedId };
   },
 
-  isExistId(id: string) {
-    return db.blogs.findIndex((blog) => blog.id === id) !== -1;
+  async getBlog(id: string) {
+    return blogsCollection.findOne({ _id: new ObjectId(id) });
   },
 
-  updateBlog(id: string, blog: BlogInput) {
-    db.blogs = db.blogs.map((item) => {
-      if (item.id === id) {
-        return { ...item, ...blog };
-      }
-      return item;
-    });
+  // isExistId(id: string) {
+  //   return db.blogs.findIndex((blog) => blog.id === id) !== -1;
+  // },
+
+  async updateBlog(id: string, blog: Omit<Blog, 'createdAt'>) {
+    const result = await blogsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: blog },
+    );
+    return result.modifiedCount > 0;
   },
 
-  deleteBlog(id: string) {
-    db.blogs = db.blogs.filter((blog) => blog.id !== id);
+  async deleteBlog(id: string) {
+    const result = await blogsCollection.deleteOne({ _id: new ObjectId(id) });
+    return result.deletedCount > 0;
   },
 };
