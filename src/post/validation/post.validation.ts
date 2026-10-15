@@ -4,7 +4,9 @@ export const idValidation = param('id')
   .exists()
   .withMessage('id is required')
   .isString()
-  .withMessage('id must be a string');
+  .withMessage('id must be a string')
+  .isMongoId()
+  .withMessage('Incorrect format of ObjectId'); // Проверка на формат ObjectId
 
 export const inputPostBodyValidation = checkSchema(
   {

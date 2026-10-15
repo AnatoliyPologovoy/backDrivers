@@ -3,4 +3,5 @@ export type PostInput = {
   shortDescription: string; //maxLength: 100
   content: string; //maxLength: 1000
   blogId: string;
+  createdAt: Date;
 };

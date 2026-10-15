@@ -1,49 +1,43 @@
-import { db } from '../../db/db';
-import { Post } from '../types/post';
+import { Post, PostView } from '../types/post';
 import { PostInput } from '../types/post.input.dto';
 import { blogsRepositories } from '../../blogs/repositories/blogs.repositories';
+import { postsCollection } from '../../db/collections';
+import { ObjectId, WithId } from 'mongodb';
 
 export const postsRepositories = {
-  findAllPosts(): Post[] {
-    return db.posts;
+  async findAllPosts(): Promise<WithId<Post>[]> {
+    return postsCollection.find({}).toArray();
   },
-  async createPost(post: PostInput): Promise<Post> {
-    const lastId = db.posts[db.posts.length - 1]?.id;
-    const newId: string = String(lastId ? +lastId + 1 : 1);
 
+  async createPost(post: PostInput): Promise<WithId<Post>> {
     // имя блога берём по blogId, чтобы не доверять данным клиента
     const blog = await blogsRepositories.getBlog(post.blogId);
-
+    // const blog = { name: 'qwre' };
     const newPost = {
       ...post,
-      id: newId,
       blogName: blog?.name ?? '',
     };
 
-    db.posts.push(newPost);
+    const result = await postsCollection.insertOne(newPost);
 
-    return newPost;
+    return { ...newPost, _id: result.insertedId };
   },
 
-  getPost(id: string) {
-    const post = db.posts.find((post) => post.id === id);
-    return post ?? null;
+  async getPost(id: string) {
+    return postsCollection.findOne({ _id: new ObjectId(id) });
   },
 
-  isExistId(id: string) {
-    return db.posts.findIndex((post) => post.id === id) !== -1;
+  async updatePost(id: string, post: Omit<PostInput, 'createdAt'>) {
+    const result = await postsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: post },
+    );
+
+    return result.modifiedCount > 0;
   },
 
-  updatePost(id: string, post: PostInput) {
-    db.posts = db.posts.map((item) => {
-      if (item.id === id) {
-        return { ...item, ...post };
-      }
-      return item;
-    });
-  },
-
-  deletePost(id: string) {
-    db.posts = db.posts.filter((post) => post.id !== id);
+  async deletePost(id: string) {
+    const result = await postsCollection.deleteOne({ _id: new ObjectId(id) });
+    return result.deletedCount > 0;
   },
 };

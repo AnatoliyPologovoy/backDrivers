@@ -18,10 +18,6 @@ export const blogsRepositories = {
     return blogsCollection.findOne({ _id: new ObjectId(id) });
   },
 
-  // isExistId(id: string) {
-  //   return db.blogs.findIndex((blog) => blog.id === id) !== -1;
-  // },
-
   async updateBlog(id: string, blog: Omit<Blog, 'createdAt'>) {
     const result = await blogsCollection.updateOne(
       { _id: new ObjectId(id) },

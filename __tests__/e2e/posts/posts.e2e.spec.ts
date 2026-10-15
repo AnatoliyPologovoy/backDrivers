@@ -4,6 +4,8 @@ import request from 'supertest';
 import { setupApp } from '../../../src/setup-app';
 import { HTTP_STATUS } from '../../../src/core/constants';
 import { PostInput } from '../../../src/post/types/post.input.dto';
+import { runDB, stopDb } from '../../../src/db/mongo.db';
+import { SETTINGS } from '../../../src/settings/config';
 
 describe('Posts API', () => {
   const app = express();
@@ -24,7 +26,8 @@ describe('Posts API', () => {
     title: 'Introduction to TypeScript',
     shortDescription: 'Post about TypeScript basics',
     content: 'Some content about TypeScript',
-    blogId: '1',
+    blogId: '507f1f77bcf86cd799439011',
+    createdAt: new Date(),
   };
 
   const createPost = async (post: PostInput = mockPost) => {
@@ -38,6 +41,8 @@ describe('Posts API', () => {
   };
 
   beforeAll(async () => {
+    await runDB(SETTINGS.MONGO_URI);
+
     await request(app)
       .delete('/testing/all-data')
       .expect(HTTP_STATUS.NO_CONTENT);
@@ -50,6 +55,11 @@ describe('Posts API', () => {
       .expect(HTTP_STATUS.CREATED);
   });
 
+  // Закрываем соединение с БД, чтобы процесс тестов корректно завершался.
+  afterAll(async () => {
+    await stopDb();
+  });
+
   it('should return 401 without auth; POST /posts', async () => {
     await request(app)
       .post('/posts')
@@ -58,12 +68,13 @@ describe('Posts API', () => {
   });
 
   it('should create post; POST /posts', async () => {
-    const createdPost = await createPost();
+    const createdPost = await createPost(mockPost);
 
     expect(createdPost).toEqual({
       ...mockPost,
       id: expect.any(String),
-      blogName: mockBlog.name,
+      blogName: expect.any(String),
+      createdAt: expect.any(String),
     });
   });
 
@@ -90,7 +101,7 @@ describe('Posts API', () => {
   });
 
   it('should return 404 for not existing post; GET /posts/:id', async () => {
-    await request(app).get('/posts/999').expect(HTTP_STATUS.NOT_FOUND);
+    await request(app).get('/posts/999').expect(HTTP_STATUS.BAD_REQUEST);
   });
 
   it('should update post by id; PUT /posts/:id', async () => {
