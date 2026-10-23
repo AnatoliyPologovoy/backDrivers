@@ -13,7 +13,7 @@ export const getAllBlogs = async (
   res: Response,
 ) => {
   try {
-    const blogs = blogsService.getAllBlogs();
+    const blogs = await blogsService.getAllBlogs();
     res.status(HTTP_STATUS.OK).send(blogs);
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
@@ -25,7 +25,7 @@ export const createBlog = async (
   res: Response,
 ) => {
   try {
-    const blogViewModel = blogsService.createBlog(req.body);
+    const blogViewModel = await blogsService.createBlog(req.body);
     return res.status(HTTP_STATUS.CREATED).send(blogViewModel);
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
