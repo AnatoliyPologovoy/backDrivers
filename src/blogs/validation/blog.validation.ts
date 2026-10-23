@@ -28,6 +28,10 @@ export const inputBlogBodyValidation = checkSchema(
       isLength: { options: { min: 1, max: 100 } },
       matches: { options: URL_REGEX },
     },
+    searchNameTerm: {
+      trim: true,
+      default: { options: null },
+    },
   },
   ['body'],
 );

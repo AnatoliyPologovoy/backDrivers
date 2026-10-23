@@ -13,11 +13,18 @@ import {
 import { inputValidationResultMiddleware } from '../../core/middlewares/validation/input-validation-result.middleware';
 import { superAdminGuardMiddleware } from '../../auth/middlewares/super-admin.guard.middleware';
 import { deleteById } from './handlers/blogsHadnlers';
+import { paginationAndSortingValidation } from '../validation/query-pagination-sorting.validation';
+import { SORT_BLOGS_FIELDS } from '../constants';
 
 export const blogsRouters = Router();
 
 //Get all
-blogsRouters.get(BLOGS_ROUTES.ROOT, getAllBlogs);
+blogsRouters.get(
+  BLOGS_ROUTES.ROOT,
+  paginationAndSortingValidation(SORT_BLOGS_FIELDS),
+  inputValidationResultMiddleware,
+  getAllBlogs,
+);
 
 //createBlog
 blogsRouters.post(

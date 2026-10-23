@@ -10,3 +10,8 @@ export const HTTP_STATUS = {
 
   INTERNAL_SERVER_ERROR: 500,
 };
+
+export const SORT_DIRECTION = {
+  DESK: 'Desk',
+  ASK: 'Ask',
+};

@@ -9,7 +9,7 @@ import { mapToBlogsViewModel } from '../../mappers/mapToBlogsViewModel';
 import { blogsService } from '../../application/blogs.service';
 
 export const getAllBlogs = async (
-  req: Request<void, BlogView[]>,
+  req: Request<Record<string, string>, BlogView[]>,
   res: Response,
 ) => {
   try {
