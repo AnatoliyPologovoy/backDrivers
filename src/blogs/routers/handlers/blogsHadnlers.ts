@@ -1,19 +1,18 @@
 import { Response, Request } from 'express';
-import { Blog, BlogView } from '../../types/blog';
-import { blogsRouters } from '../blogs.routers';
+import { Blog, BlogQuery, BlogView } from '../../types/blog';
 import { HTTP_STATUS } from '../../../core/constants';
-import { blogsRepositories } from '../../repositories/blogs.repositories';
 import { BlogInput } from '../../types/blog.input.dto';
-import { blogsCollection } from '../../../db/collections';
 import { mapToBlogsViewModel } from '../../mappers/mapToBlogsViewModel';
 import { blogsService } from '../../application/blogs.service';
+import { BlogsOutData } from '../../types/blogs.output';
 
 export const getAllBlogs = async (
-  req: Request<Record<string, string>, BlogView[]>,
+  req: Request<void, BlogsOutData, {}, BlogQuery>,
   res: Response,
 ) => {
   try {
-    const blogs = await blogsService.getAllBlogs();
+    const query = req.query;
+    const blogs = await blogsService.getAllBlogs(query);
     res.status(HTTP_STATUS.OK).send(blogs);
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);

@@ -1,12 +1,30 @@
 import { db } from '../../db/db';
-import { Blog } from '../types/blog';
-import { BlogInput } from '../types/blog.input.dto';
+import { Blog, BlogQuery } from '../types/blog';
 import { blogsCollection } from '../../db/collections';
 import { ObjectId, WithId } from 'mongodb';
+import { BlogsRepoData } from '../types/blogs.output';
 
 export const blogsRepositories = {
-  async findAllBlogs(): Promise<WithId<Blog>[]> {
-    return blogsCollection.find().toArray();
+  async findAllBlogs(query: BlogQuery): Promise<BlogsRepoData> {
+    const { pageNumber, pageSize, sortDirection, sortBy, searchNameTerm } =
+      query;
+
+    const filter: Record<string, object> = {};
+    if (searchNameTerm) {
+      filter.name = { $regex: searchNameTerm, $options: 'i' };
+    }
+
+    const skip = (pageNumber - 1) * pageSize;
+
+    const items = await blogsCollection
+      .find(filter)
+      .sort({ [sortBy]: sortDirection })
+      .skip(skip)
+      .limit(pageSize)
+      .toArray();
+
+    const totalCount = await blogsCollection.countDocuments(filter);
+    return { items, totalCount };
   },
 
   async createBlog(blog: Blog): Promise<WithId<Blog>> {

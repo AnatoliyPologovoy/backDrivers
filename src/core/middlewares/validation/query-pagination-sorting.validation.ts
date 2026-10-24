@@ -1,6 +1,5 @@
-import { body, checkSchema, param } from 'express-validator';
-import { SORT_DIRECTION } from '../../core/constants';
-import { SORT_BLOGS_FIELDS } from '../constants';
+import { checkSchema } from 'express-validator';
+import { SORT_DIRECTION } from '../../constants';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 10;
@@ -42,5 +41,5 @@ export const paginationAndSortingValidation = (
         },
       },
     },
-    ['params'],
+    ['query'],
   );

@@ -1,14 +1,13 @@
 import { blogsRepositories } from '../repositories/blogs.repositories';
 import { mapToBlogsViewModel } from '../mappers/mapToBlogsViewModel';
 import { BlogInput } from '../types/blog.input.dto';
-import { Blog } from '../types/blog';
+import { Blog, BlogQuery } from '../types/blog';
+import { mapToBlogsPaginationModel } from '../mappers/mapToBlogsPaginationModel';
 
 export const blogsService = {
-  async getAllBlogs() {
-    const blogs = (await blogsRepositories.findAllBlogs()).map(
-      mapToBlogsViewModel,
-    );
-    return blogs;
+  async getAllBlogs(query: BlogQuery) {
+    const blogsRepoData = await blogsRepositories.findAllBlogs(query);
+    return mapToBlogsPaginationModel(query, blogsRepoData);
   },
 
   async createBlog(blogInput: BlogInput) {
