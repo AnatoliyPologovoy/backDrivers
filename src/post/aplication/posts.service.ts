@@ -1,13 +1,13 @@
 import { postsRepositories } from '../repositories/posts.repositories';
 import { mapToPostsViewModel } from '../routers/mappers/mapToPostsViewModel';
-import { PostInput } from '../types/post.input.dto';
+import { PostInput, PostQuery } from '../types/post.input.dto';
+import { mapToBlogsPaginationModel } from '../routers/mappers/mapToPostPaginationModel';
 
 export const postsService = {
-  async getAllPosts() {
-    const posts = (await postsRepositories.findAllPosts()).map(
-      mapToPostsViewModel,
-    );
-    return posts;
+  async getAllPosts(query: PostQuery) {
+    const postRepoData = await postsRepositories.findAllPosts(query);
+    const postOutData = mapToBlogsPaginationModel(query, postRepoData);
+    return postOutData;
   },
 
   async createPost(postInput: PostInput) {

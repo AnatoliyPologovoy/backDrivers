@@ -1,19 +1,19 @@
 import { Response, Request } from 'express';
 import { Post, PostView } from '../../types/post';
 import { HTTP_STATUS } from '../../../core/constants';
-import { postsRepositories } from '../../repositories/posts.repositories';
-import { PostInput } from '../../types/post.input.dto';
-import { postsCollection } from '../../../db/collections';
+import { PostInput, PostQuery } from '../../types/post.input.dto';
 import { mapToPostsViewModel } from '../mappers/mapToPostsViewModel';
-import { blogsRepositories } from '../../../blogs/repositories/blogs.repositories';
 import { postsService } from '../../aplication/posts.service';
+import { matchedData } from 'express-validator';
 
 export const getAllPosts = async (
-  req: Request<void, PostView[]>,
+  req: Request<{}, PostView[], {}, Record<string, any>>,
   res: Response,
 ) => {
   try {
-    const posts = await postsService.getAllPosts();
+    const defaultData = matchedData(req);
+    const query = { ...req.query, ...defaultData } as PostQuery;
+    const posts = await postsService.getAllPosts(query);
     res.status(HTTP_STATUS.OK).send(posts);
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);

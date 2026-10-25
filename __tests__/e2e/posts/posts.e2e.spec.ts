@@ -86,8 +86,8 @@ describe('Posts API', () => {
       .get('/posts')
       .expect(HTTP_STATUS.OK);
 
-    expect(postsListResponse.body).toBeInstanceOf(Array);
-    expect(postsListResponse.body.length).toBeGreaterThanOrEqual(2);
+    expect(postsListResponse.body.items).toBeInstanceOf(Array);
+    expect(postsListResponse.body.items.length).toBeGreaterThanOrEqual(2);
   });
 
   it('should return post by id; GET /posts/:id', async () => {

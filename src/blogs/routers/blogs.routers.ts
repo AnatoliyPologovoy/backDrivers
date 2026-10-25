@@ -13,21 +13,15 @@ import {
 import { inputValidationResultMiddleware } from '../../core/middlewares/validation/input-validation-result.middleware';
 import { superAdminGuardMiddleware } from '../../auth/middlewares/super-admin.guard.middleware';
 import { deleteById } from './handlers/blogsHadnlers';
-import {
-  defaultPaginationAndSortingMiddleware,
-  defaultPaginationAndSortingValidation,
-  paginationAndSortingValidation,
-} from '../../core/middlewares/validation/query-pagination-sorting.validation';
-import { SORT_BLOGS_FIELDS, SORT_BLOGS_FIELDS_ARR } from '../constants';
+import { paginationAndSortingValidation } from '../../core/middlewares/validation/query-pagination-sorting.validation';
+import { SORT_BLOGS_FIELDS } from '../constants';
 
 export const blogsRouters = Router({});
 
 //Get all
 blogsRouters.get(
   BLOGS_ROUTES.ROOT,
-  // defaultPaginationAndSortingMiddleware(SORT_BLOGS_FIELDS),
   paginationAndSortingValidation(SORT_BLOGS_FIELDS),
-  // paginationAndSortingValidation(SORT_BLOGS_FIELDS_ARR),
   inputValidationResultMiddleware,
   getAllBlogs,
 );

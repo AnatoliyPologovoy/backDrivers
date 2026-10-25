@@ -1,8 +1,6 @@
 import { checkSchema, query, validationResult } from 'express-validator';
-import { HTTP_STATUS, SORT_DIRECTION } from '../../constants';
+import { SORT_DIRECTION } from '../../constants';
 import { NextFunction, Request, Response } from 'express';
-import { getErrorResponse } from '../../utils';
-import { SORT_BLOGS_FIELDS_ARR } from '../../../blogs/constants';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 10;

@@ -1,18 +1,31 @@
-import { Post, PostView } from '../types/post';
-import { PostInput } from '../types/post.input.dto';
+import { Post } from '../types/post';
+import { PostInput, PostQuery } from '../types/post.input.dto';
 import { blogsRepositories } from '../../blogs/repositories/blogs.repositories';
 import { postsCollection } from '../../db/collections';
 import { ObjectId, WithId } from 'mongodb';
+import { PostRepoData } from '../types/post.output';
 
 export const postsRepositories = {
-  async findAllPosts(): Promise<WithId<Post>[]> {
-    return postsCollection.find({}).toArray();
+  async findAllPosts(query: PostQuery): Promise<PostRepoData> {
+    const { pageNumber, pageSize, sortDirection, sortBy } = query;
+
+    const skip = (pageNumber - 1) * pageSize;
+
+    const items = await postsCollection
+      .find()
+      .sort({ [sortBy]: sortDirection })
+      .skip(skip)
+      .limit(pageSize)
+      .toArray();
+    const totalCount = await postsCollection.countDocuments();
+
+    return { items, totalCount };
   },
 
   async createPost(post: PostInput): Promise<WithId<Post>> {
     // имя блога берём по blogId, чтобы не доверять данным клиента
     const blog = await blogsRepositories.getBlog(post.blogId);
-    // const blog = { name: 'qwre' };
+
     const newPost = {
       ...post,
       blogName: blog?.name ?? '',

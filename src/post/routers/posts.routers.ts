@@ -13,11 +13,18 @@ import {
 } from '../validation/post.validation';
 import { inputValidationResultMiddleware } from '../../core/middlewares/validation/input-validation-result.middleware';
 import { superAdminGuardMiddleware } from '../../auth/middlewares/super-admin.guard.middleware';
+import { paginationAndSortingValidation } from '../../core/middlewares/validation/query-pagination-sorting.validation';
+import { SORT_POST_FIELDS } from '../constants';
 
 export const postsRouter = Router();
 
 //Get all
-postsRouter.get(POSTS_ROUTES.ROOT, getAllPosts);
+postsRouter.get(
+  POSTS_ROUTES.ROOT,
+  paginationAndSortingValidation(SORT_POST_FIELDS),
+  inputValidationResultMiddleware,
+  getAllPosts,
+);
 
 //createPost
 postsRouter.post(
