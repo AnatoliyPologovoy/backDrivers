@@ -1,4 +1,3 @@
-import { db } from '../../db/db';
 import { Blog, BlogQuery } from '../types/blog';
 import { blogsCollection } from '../../db/collections';
 import { ObjectId, WithId } from 'mongodb';

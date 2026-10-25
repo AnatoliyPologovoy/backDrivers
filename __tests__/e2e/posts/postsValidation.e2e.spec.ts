@@ -4,6 +4,8 @@ import request from 'supertest';
 import { setupApp } from '../../../src/setup-app';
 import { HTTP_STATUS } from '../../../src/core/constants';
 import { PostInput } from '../../../src/post/types/post.input.dto';
+import { runDB, stopDb } from '../../../src/db/mongo.db';
+import { SETTINGS } from '../../../src/settings/config';
 
 describe('Posts API validation', () => {
   const app = express();
@@ -19,9 +21,12 @@ describe('Posts API validation', () => {
     shortDescription: 'Post about TypeScript basics',
     content: 'Some content about TypeScript',
     blogId: '1',
+    createdAt: new Date(),
   };
 
   beforeAll(async () => {
+    await runDB(SETTINGS.MONGO_URI);
+
     await request(app)
       .delete('/testing/all-data')
       .expect(HTTP_STATUS.NO_CONTENT);
@@ -35,6 +40,11 @@ describe('Posts API validation', () => {
         websiteUrl: 'https://example.com',
       })
       .expect(HTTP_STATUS.CREATED);
+  });
+
+  // Закрываем соединение с БД, чтобы процесс тестов корректно завершался.
+  afterAll(async () => {
+    await stopDb();
   });
 
   it('check invalid title for POST', async () => {

@@ -5,8 +5,10 @@ import { setupApp } from '../../../src/setup-app';
 import { HTTP_STATUS } from '../../../src/core/constants';
 
 import { BlogInput } from '../../../src/blogs/types/blog.input.dto';
+import { runDB, stopDb } from '../../../src/db/mongo.db';
+import { SETTINGS } from '../../../src/settings/config';
 
-describe('Blogs API', () => {
+describe('Blogs validation API', () => {
   const app = express();
   setupApp(app);
 
@@ -23,9 +25,16 @@ describe('Blogs API', () => {
   };
 
   beforeAll(async () => {
+    await runDB(SETTINGS.MONGO_URI);
+
     await request(app)
       .delete('/testing/all-data')
       .expect(HTTP_STATUS.NO_CONTENT);
+  });
+
+  // Закрываем соединение с БД, чтобы процесс тестов корректно завершался.
+  afterAll(async () => {
+    await stopDb();
   });
 
   it('check invalid websiteUrl for POST', async () => {

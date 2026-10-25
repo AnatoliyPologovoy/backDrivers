@@ -5,13 +5,16 @@ import { BlogInput } from '../../types/blog.input.dto';
 import { mapToBlogsViewModel } from '../../mappers/mapToBlogsViewModel';
 import { blogsService } from '../../application/blogs.service';
 import { BlogsOutData } from '../../types/blogs.output';
+import { matchedData } from 'express-validator';
 
 export const getAllBlogs = async (
-  req: Request<void, BlogsOutData, {}, BlogQuery>,
+  // ParsedQs из express не совместим с BlogQuery, поэтому приводим query к доменному типу
+  req: Request<{}, BlogsOutData, {}, Record<string, any>>,
   res: Response,
 ) => {
   try {
-    const query = req.query;
+    const defaultData = matchedData(req);
+    const query = { ...req.query, ...defaultData } as BlogQuery;
     const blogs = await blogsService.getAllBlogs(query);
     res.status(HTTP_STATUS.OK).send(blogs);
   } catch {

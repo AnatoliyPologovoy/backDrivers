@@ -20,7 +20,7 @@ export const inputValidationResultMiddleware = (
   const errors = validationResult(req)
     .formatWith(formatErrors)
     .array({ onlyFirstError: true });
-
+  const req2 = req.query;
   if (errors.length > 0) {
     res.status(HTTP_STATUS.BAD_REQUEST).json(getErrorResponse(errors));
     return;

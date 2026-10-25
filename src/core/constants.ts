@@ -12,6 +12,6 @@ export const HTTP_STATUS = {
 };
 
 export const SORT_DIRECTION = {
-  DESK: 'desk',
-  ASK: 'ask',
+  DESC: 'desc',
+  ASC: 'asc',
 };
