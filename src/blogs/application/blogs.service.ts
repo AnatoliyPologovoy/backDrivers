@@ -47,14 +47,23 @@ export const blogsService = {
       Omit<PostInput, 'blogId' | 'createdAt'>
     >,
   ) {
+    const blog = await blogsRepositories.getBlog(req.params.blogid);
+    if (!blog) {
+      return null;
+    }
     const post = await postsService.createPost({
       ...req.body,
       blogId: req.params.blogid,
     });
+
     return post;
   },
 
   async getAllPostsByBlogId(query: PostQuery, blogId: string) {
+    const blog = await blogsRepositories.getBlog(blogId);
+    if (!blog) {
+      return null;
+    }
     const posts = await postsService.getAllPostsByBlogId(query, blogId);
     return posts;
   },

@@ -96,7 +96,11 @@ export const createPostByBlogId = async (
 ) => {
   try {
     const post = await blogsService.createPostByBlogId(req);
-    return res.status(HTTP_STATUS.CREATED).send(post);
+    if (post) {
+      return res.status(HTTP_STATUS.CREATED).send(post);
+    } else {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND);
+    }
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
@@ -113,7 +117,11 @@ export const getAllPostsByBlogId = async (
       query,
       req.params.blogid,
     );
-    res.status(HTTP_STATUS.OK).send(posts);
+    if (posts) {
+      res.status(HTTP_STATUS.OK).send(posts);
+    } else {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND);
+    }
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
