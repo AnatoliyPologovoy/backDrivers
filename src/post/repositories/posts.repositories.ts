@@ -36,7 +36,7 @@ export const postsRepositories = {
       .skip(skip)
       .limit(pageSize)
       .toArray();
-    const totalCount = await postsCollection.countDocuments();
+    const totalCount = await postsCollection.countDocuments({ blogId });
 
     return { items, totalCount };
   },
