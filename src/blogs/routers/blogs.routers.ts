@@ -4,6 +4,7 @@ import {
   createBlog,
   createPostByBlogId,
   getAllBlogs,
+  getAllPostsByBlogId,
   getBlogById,
   updateById,
 } from './handlers/blogsHadnlers';
@@ -20,6 +21,7 @@ import {
   blogIdValidation,
   validationCreatePostByBlogId,
 } from '../validation/createPostByBlogId.validation';
+import { SORT_POST_FIELDS } from '../../post/constants';
 
 export const blogsRouters = Router({});
 
@@ -38,16 +40,6 @@ blogsRouters.post(
   inputBlogBodyValidation,
   inputValidationResultMiddleware,
   createBlog,
-);
-
-//create post for a specific blog
-blogsRouters.post(
-  BLOGS_ROUTES.BLOG_ID_POSTS,
-  superAdminGuardMiddleware,
-  blogIdValidation,
-  validationCreatePostByBlogId,
-  inputValidationResultMiddleware,
-  createPostByBlogId,
 );
 
 //getBlogById
@@ -75,4 +67,23 @@ blogsRouters.delete(
   idValidation,
   inputValidationResultMiddleware,
   deleteById,
+);
+
+//create post for a specific blog
+blogsRouters.post(
+  BLOGS_ROUTES.BLOG_ID_POSTS,
+  superAdminGuardMiddleware,
+  blogIdValidation,
+  validationCreatePostByBlogId,
+  inputValidationResultMiddleware,
+  createPostByBlogId,
+);
+
+//get posts for a specific blog
+blogsRouters.get(
+  BLOGS_ROUTES.BLOG_ID_POSTS,
+  blogIdValidation,
+  paginationAndSortingValidation(SORT_POST_FIELDS),
+  inputValidationResultMiddleware,
+  getAllPostsByBlogId,
 );

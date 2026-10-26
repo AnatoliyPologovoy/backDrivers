@@ -1,13 +1,14 @@
 import { Response, Request } from 'express';
-import { Post, PostView } from '../../types/post';
+import { Post } from '../../types/post';
 import { HTTP_STATUS } from '../../../core/constants';
 import { PostInput, PostQuery } from '../../types/post.input.dto';
 import { mapToPostsViewModel } from '../mappers/mapToPostsViewModel';
 import { postsService } from '../../aplication/posts.service';
 import { matchedData } from 'express-validator';
+import { PostOutData } from '../../types/post.output';
 
 export const getAllPosts = async (
-  req: Request<{}, PostView[], {}, Record<string, any>>,
+  req: Request<{}, PostOutData, {}, Record<string, any>>,
   res: Response,
 ) => {
   try {

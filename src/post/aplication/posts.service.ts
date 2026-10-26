@@ -10,6 +10,15 @@ export const postsService = {
     return postOutData;
   },
 
+  async getAllPostsByBlogId(query: PostQuery, blogId: string) {
+    const postRepoData = await postsRepositories.findAllPostsByBlogId(
+      query,
+      blogId,
+    );
+    const postOutData = mapToBlogsPaginationModel(query, postRepoData);
+    return postOutData;
+  },
+
   async createPost(postInput: Omit<PostInput, 'createdAt'>) {
     const newPost = {
       ...postInput,

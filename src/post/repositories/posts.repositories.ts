@@ -22,6 +22,25 @@ export const postsRepositories = {
     return { items, totalCount };
   },
 
+  async findAllPostsByBlogId(
+    query: PostQuery,
+    blogId: string,
+  ): Promise<PostRepoData> {
+    const { pageNumber, pageSize, sortDirection, sortBy } = query;
+
+    const skip = (pageNumber - 1) * pageSize;
+
+    const items = await postsCollection
+      .find({ blogId })
+      .sort({ [sortBy]: sortDirection })
+      .skip(skip)
+      .limit(pageSize)
+      .toArray();
+    const totalCount = await postsCollection.countDocuments();
+
+    return { items, totalCount };
+  },
+
   async createPost(post: PostInput): Promise<WithId<Post>> {
     // имя блога берём по blogId, чтобы не доверять данным клиента
     const blog = await blogsRepositories.getBlog(post.blogId);

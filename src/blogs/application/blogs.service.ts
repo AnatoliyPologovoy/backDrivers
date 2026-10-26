@@ -5,7 +5,7 @@ import { Blog, BlogQuery } from '../types/blog';
 import { mapToBlogsPaginationModel } from '../mappers/mapToBlogsPaginationModel';
 import { Request } from 'express';
 import { Post, PostView } from '../../post/types/post';
-import { PostInput } from '../../post/types/post.input.dto';
+import { PostInput, PostQuery } from '../../post/types/post.input.dto';
 import { postsService } from '../../post/aplication/posts.service';
 
 export const blogsService = {
@@ -52,5 +52,10 @@ export const blogsService = {
       blogId: req.params.blogid,
     });
     return post;
+  },
+
+  async getAllPostsByBlogId(query: PostQuery, blogId: string) {
+    const posts = await postsService.getAllPostsByBlogId(query, blogId);
+    return posts;
   },
 };
