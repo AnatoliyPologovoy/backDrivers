@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { BLOGS_ROUTES } from './constants';
 import {
   createBlog,
+  createPostByBlogId,
   getAllBlogs,
   getBlogById,
   updateById,
@@ -15,6 +16,10 @@ import { superAdminGuardMiddleware } from '../../auth/middlewares/super-admin.gu
 import { deleteById } from './handlers/blogsHadnlers';
 import { paginationAndSortingValidation } from '../../core/middlewares/validation/query-pagination-sorting.validation';
 import { SORT_BLOGS_FIELDS } from '../constants';
+import {
+  blogIdValidation,
+  validationCreatePostByBlogId,
+} from '../validation/createPostByBlogId.validation';
 
 export const blogsRouters = Router({});
 
@@ -33,6 +38,16 @@ blogsRouters.post(
   inputBlogBodyValidation,
   inputValidationResultMiddleware,
   createBlog,
+);
+
+//create post for a specific blog
+blogsRouters.post(
+  BLOGS_ROUTES.BLOG_ID_POSTS,
+  superAdminGuardMiddleware,
+  blogIdValidation,
+  validationCreatePostByBlogId,
+  inputValidationResultMiddleware,
+  createPostByBlogId,
 );
 
 //getBlogById

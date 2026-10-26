@@ -66,7 +66,7 @@ describe('Blogs API: GET /blogs (search, sorting, pagination)', () => {
 
   beforeAll(async () => {
     await runDB(SETTINGS.MONGO_URI);
-  });
+  }, 100000);
 
   beforeEach(async () => {
     await request(app)

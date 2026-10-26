@@ -3,6 +3,10 @@ import { mapToBlogsViewModel } from '../mappers/mapToBlogsViewModel';
 import { BlogInput } from '../types/blog.input.dto';
 import { Blog, BlogQuery } from '../types/blog';
 import { mapToBlogsPaginationModel } from '../mappers/mapToBlogsPaginationModel';
+import { Request } from 'express';
+import { Post, PostView } from '../../post/types/post';
+import { PostInput } from '../../post/types/post.input.dto';
+import { postsService } from '../../post/aplication/posts.service';
 
 export const blogsService = {
   async getAllBlogs(query: BlogQuery) {
@@ -34,5 +38,19 @@ export const blogsService = {
   async deleteById(id: string) {
     const isDeleted = await blogsRepositories.deleteBlog(id);
     return isDeleted;
+  },
+
+  async createPostByBlogId(
+    req: Request<
+      { blogid: string },
+      PostView,
+      Omit<PostInput, 'blogId' | 'createdAt'>
+    >,
+  ) {
+    const post = await postsService.createPost({
+      ...req.body,
+      blogId: req.params.blogid,
+    });
+    return post;
   },
 };

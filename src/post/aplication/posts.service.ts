@@ -10,7 +10,7 @@ export const postsService = {
     return postOutData;
   },
 
-  async createPost(postInput: PostInput) {
+  async createPost(postInput: Omit<PostInput, 'createdAt'>) {
     const newPost = {
       ...postInput,
       createdAt: new Date(),

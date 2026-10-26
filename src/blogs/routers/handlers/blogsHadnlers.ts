@@ -6,6 +6,8 @@ import { mapToBlogsViewModel } from '../../mappers/mapToBlogsViewModel';
 import { blogsService } from '../../application/blogs.service';
 import { BlogsOutData } from '../../types/blogs.output';
 import { matchedData } from 'express-validator';
+import { Post, PostView } from '../../../post/types/post';
+import { PostInput } from '../../../post/types/post.input.dto';
 
 export const getAllBlogs = async (
   // ParsedQs из express не совместим с BlogQuery, поэтому приводим query к доменному типу
@@ -29,6 +31,22 @@ export const createBlog = async (
   try {
     const blogViewModel = await blogsService.createBlog(req.body);
     return res.status(HTTP_STATUS.CREATED).send(blogViewModel);
+  } catch {
+    return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  }
+};
+
+export const createPostByBlogId = async (
+  req: Request<
+    { blogid: string },
+    PostView,
+    Omit<PostInput, 'blogId' | 'createdAt'>
+  >,
+  res: Response,
+) => {
+  try {
+    const post = await blogsService.createPostByBlogId(req);
+    return res.status(HTTP_STATUS.CREATED).send(post);
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }

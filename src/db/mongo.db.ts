@@ -2,6 +2,7 @@ import { Db, MongoClient } from 'mongodb';
 import { SETTINGS } from '../settings/config';
 import { initCollections } from './collections';
 
+import os from 'node:os';
 import dns from 'node:dns';
 // Устанавливаем DNS-серверы Cloudflare или Google
 dns.setServers(['1.1.1.1', '8.8.8.8']);
@@ -15,7 +16,9 @@ export async function runDB(url?: string): Promise<void> {
     return;
   }
 
-  client = new MongoClient(url);
+  // os-адаптер передаём явно: иначе драйвер грузит его через динамический import(),
+  // который в vm-контексте Jest падает без --experimental-vm-modules.
+  client = new MongoClient(url, { runtimeAdapters: { os } });
   const db: Db = client.db(SETTINGS.DB_NAME);
 
   // Инициализируем коллекции из подключённой базы.

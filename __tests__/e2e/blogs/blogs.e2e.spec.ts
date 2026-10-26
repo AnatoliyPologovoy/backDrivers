@@ -7,6 +7,7 @@ import { Blog } from '../../../src/blogs/types/blog';
 import { BlogInput } from '../../../src/blogs/types/blog.input.dto';
 import { runDB, stopDb } from '../../../src/db/mongo.db';
 import { SETTINGS } from '../../../src/settings/config';
+import { PostInput } from '../../../src/post/types/post.input.dto';
 
 describe('Blogs API', () => {
   const app = express();
@@ -91,5 +92,29 @@ describe('Blogs API', () => {
     const newGetResponse = await request(app)
       .get(`/blogs/${createResponse.body.id}`)
       .expect(HTTP_STATUS.NOT_FOUND);
+  });
+
+  it('should return create a post for a specific blog POST - blogs/{id}/posts', async () => {
+    const createResponse = await request(app)
+      .post('/blogs')
+      .set(authHeader)
+      .send(mockBlog)
+      .expect(HTTP_STATUS.CREATED);
+
+    const mockInputPost = {
+      title: 'Introduction to TypeScript',
+      shortDescription: 'Post about TypeScript basics',
+      content: 'Some content about TypeScript',
+    };
+
+    const createdPost = await request(app)
+      .post(`/blogs/${createResponse.body.id}/posts`)
+      .set(authHeader)
+      .send(mockInputPost)
+      .expect(HTTP_STATUS.CREATED);
+    //
+    const getResponse = await request(app)
+      .get(`/posts/${createdPost.body.id}`)
+      .expect(HTTP_STATUS.OK);
   });
 });
