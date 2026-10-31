@@ -15,8 +15,8 @@ export const blogsService = {
       isMembership: false,
       createdAt: new Date(),
     };
-    const createdBlog = await blogsRepositories.createBlog(newBlog);
-    return mapToBlogsViewModel(createdBlog);
+    const createdBlogId = await blogsRepositories.createBlog(newBlog);
+    return createdBlogId.toString();
   },
 
   async updateById(id: string, blog: Blog) {
@@ -41,12 +41,12 @@ export const blogsService = {
     if (!blog) {
       return null;
     }
-    const post = await postsService.createPost({
+    const createdPostId = await postsService.createPost({
       ...req.body,
       blogId: req.params.blogid,
     });
 
-    return post;
+    return createdPostId;
   },
 
   async getAllPostsByBlogId(query: PostQuery, blogId: string) {

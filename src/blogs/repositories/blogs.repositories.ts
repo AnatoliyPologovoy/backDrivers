@@ -26,9 +26,9 @@ export const blogsRepositories = {
     return { items, totalCount };
   },
 
-  async createBlog(blog: Blog): Promise<WithId<Blog>> {
+  async createBlog(blog: Blog) {
     const insertResult = await blogsCollection.insertOne(blog);
-    return { ...blog, _id: insertResult.insertedId };
+    return insertResult.insertedId;
   },
 
   async getBlog(id: string) {

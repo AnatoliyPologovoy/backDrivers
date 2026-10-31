@@ -25,7 +25,8 @@ export const getAllBlogs = async (
 
     const blogs = await blogsQueryRepositories.findAllBlogs(query);
     res.status(HTTP_STATUS.OK).send(blogs);
-  } catch {
+  } catch (e) {
+    console.log('Error getAllBlogs ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -35,9 +36,14 @@ export const createBlog = async (
   res: Response,
 ) => {
   try {
-    const blogViewModel = await blogsService.createBlog(req.body);
-    return res.status(HTTP_STATUS.CREATED).send(blogViewModel);
-  } catch {
+    const createdBlogId = await blogsService.createBlog(req.body);
+    const blog = await blogsQueryRepositories.getBlog(createdBlogId);
+    if (!blog) {
+      throw new Error('createdBlogId not found');
+    }
+    return res.status(HTTP_STATUS.CREATED).send(blog);
+  } catch (e) {
+    console.log('Error createBlog ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -53,7 +59,8 @@ export const getBlogById = async (
     } else {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }
-  } catch {
+  } catch (e) {
+    console.log('Error getBlogById ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -69,7 +76,8 @@ export const updateById = async (
     } else {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }
-  } catch {
+  } catch (e) {
+    console.log('Error updateById ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -85,7 +93,8 @@ export const deleteById = async (
     } else {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }
-  } catch {
+  } catch (e) {
+    console.log('Error deleteById ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -99,13 +108,15 @@ export const createPostByBlogId = async (
   res: Response,
 ) => {
   try {
-    const post = await blogsService.createPostByBlogId(req);
-    if (post) {
+    const createdPostId = await blogsService.createPostByBlogId(req);
+    if (createdPostId) {
+      const post = await postsQueryRepositories.getPostById(createdPostId);
       return res.status(HTTP_STATUS.CREATED).send(post);
     } else {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }
-  } catch {
+  } catch (e) {
+    console.log('Error createPostByBlogId ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -131,7 +142,8 @@ export const getAllPostsByBlogId = async (
     );
 
     res.status(HTTP_STATUS.OK).send(posts);
-  } catch {
+  } catch (e) {
+    console.log('Error getAllPostsByBlogId ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
