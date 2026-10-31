@@ -9,11 +9,6 @@ import { PostInput, PostQuery } from '../../post/types/post.input.dto';
 import { postsService } from '../../post/aplication/posts.service';
 
 export const blogsService = {
-  async getAllBlogs(query: BlogQuery) {
-    const blogsRepoData = await blogsRepositories.findAllBlogs(query);
-    return mapToBlogsPaginationModel(query, blogsRepoData);
-  },
-
   async createBlog(blogInput: BlogInput) {
     const newBlog: Blog = {
       ...blogInput,
@@ -22,11 +17,6 @@ export const blogsService = {
     };
     const createdBlog = await blogsRepositories.createBlog(newBlog);
     return mapToBlogsViewModel(createdBlog);
-  },
-
-  async getBlogById(id: string) {
-    const blog = await blogsRepositories.getBlog(id);
-    return blog;
   },
 
   async updateById(id: string, blog: Blog) {

@@ -1,36 +1,21 @@
 import { postsRepositories } from '../repositories/posts.repositories';
-import { mapToPostsViewModel } from '../routers/mappers/mapToPostsViewModel';
-import { PostInput, PostQuery } from '../types/post.input.dto';
-import { mapToPostPaginationModel } from '../routers/mappers/mapToPostPaginationModel';
+import { PostInput } from '../types/post.input.dto';
+import { blogsRepositories } from '../../blogs/repositories/blogs.repositories';
+import { Post } from '../types/post';
 
 export const postsService = {
-  async getAllPosts(query: PostQuery) {
-    const postRepoData = await postsRepositories.findAllPosts(query);
-    const postOutData = mapToPostPaginationModel(query, postRepoData);
-    return postOutData;
-  },
-
-  async getAllPostsByBlogId(query: PostQuery, blogId: string) {
-    const postRepoData = await postsRepositories.findAllPostsByBlogId(
-      query,
-      blogId,
-    );
-    const postOutData = mapToPostPaginationModel(query, postRepoData);
-    return postOutData;
-  },
-
   async createPost(postInput: Omit<PostInput, 'createdAt'>) {
-    const newPost = {
+    // имя блога берём по blogId, чтобы не доверять данным клиента
+    const blog = await blogsRepositories.getBlog(postInput.blogId);
+
+    const newPost: Post = {
       ...postInput,
       createdAt: new Date(),
+      blogName: blog?.name ?? '',
     };
-    const createdPost = await postsRepositories.createPost(newPost);
-    return mapToPostsViewModel(createdPost);
-  },
 
-  async getPostById(id: string) {
-    const post = await postsRepositories.getPost(id);
-    return post;
+    const createdPostId = await postsRepositories.createPost(newPost);
+    return createdPostId.toString();
   },
 
   async updateById(id: string, postInput: PostInput) {

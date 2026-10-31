@@ -12,6 +12,8 @@ import { postsService } from '../../../post/aplication/posts.service';
 import { PostOutData } from '../../../post/types/post.output';
 import { getQueryWithDefault } from '../../../core/utils/getQueryWithDefault';
 import { postsQueryRepositories } from '../../../post/repositories/posts.query.repositories';
+import { blogsQueryRepositories } from '../../repositories/blogs.query.repositories';
+import { PaginationSorting } from '../../../core/types/pagination-sorting.types';
 
 export const getAllBlogs = async (
   // ParsedQs из express не совместим с BlogQuery, поэтому приводим query к доменному типу
@@ -19,9 +21,9 @@ export const getAllBlogs = async (
   res: Response,
 ) => {
   try {
-    const defaultData = matchedData(req);
-    const query = { ...req.query, ...defaultData } as BlogQuery;
-    const blogs = await blogsService.getAllBlogs(query);
+    const query = getQueryWithDefault<PaginationSorting>(req);
+
+    const blogs = await blogsQueryRepositories.findAllBlogs(query);
     res.status(HTTP_STATUS.OK).send(blogs);
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
@@ -45,9 +47,9 @@ export const getBlogById = async (
   res: Response,
 ) => {
   try {
-    const blog = await blogsService.getBlogById(req.params.id);
+    const blog = await blogsQueryRepositories.getBlog(req.params.id);
     if (blog) {
-      return res.status(HTTP_STATUS.OK).send(mapToBlogsViewModel(blog));
+      return res.status(HTTP_STATUS.OK).send(blog);
     } else {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }

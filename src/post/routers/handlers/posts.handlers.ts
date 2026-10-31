@@ -27,9 +27,14 @@ export const createPost = async (
   res: Response,
 ) => {
   try {
-    const postView = await postsService.createPost(req.body);
-    return res.status(HTTP_STATUS.CREATED).send(postView);
-  } catch {
+    const createdPostId = await postsService.createPost(req.body);
+    const post = await postsQueryRepositories.getPostById(createdPostId);
+    if (!post) {
+      throw new Error('createdPostId not found');
+    }
+    return res.status(HTTP_STATUS.CREATED).send(post);
+  } catch (e) {
+    console.log('Error createPost ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -45,7 +50,8 @@ export const getPostById = async (
     } else {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }
-  } catch {
+  } catch (e) {
+    console.log('Error getPostById ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -62,7 +68,8 @@ export const updateById = async (
     } else {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }
-  } catch {
+  } catch (e) {
+    console.log('Error updateById ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
@@ -78,7 +85,8 @@ export const deleteById = async (
     } else {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }
-  } catch {
+  } catch (e) {
+    console.log('Error deleteById ' + e);
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };

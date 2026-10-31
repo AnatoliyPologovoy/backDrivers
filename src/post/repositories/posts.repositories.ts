@@ -41,18 +41,10 @@ export const postsRepositories = {
     return { items, totalCount };
   },
 
-  async createPost(post: PostInput): Promise<WithId<Post>> {
-    // имя блога берём по blogId, чтобы не доверять данным клиента
-    const blog = await blogsRepositories.getBlog(post.blogId);
+  async createPost(post: Post) {
+    const result = await postsCollection.insertOne(post);
 
-    const newPost = {
-      ...post,
-      blogName: blog?.name ?? '',
-    };
-
-    const result = await postsCollection.insertOne(newPost);
-
-    return { ...newPost, _id: result.insertedId };
+    return result.insertedId;
   },
 
   async getPost(id: string) {
