@@ -1,6 +1,6 @@
 export const SORT_POST_FIELDS = {
-  CREATED_AT: 'createdAt',
   TITLE: 'title',
+  CREATED_AT: 'createdAt',
   SHORT_DESCRIPTION: 'shortDescription',
   CONTENT: 'content',
   BLOG_NAME: 'blogName',

@@ -61,10 +61,7 @@ export const blogsService = {
 
   async getAllPostsByBlogId(query: PostQuery, blogId: string) {
     const blog = await blogsRepositories.getBlog(blogId);
-    if (!blog) {
-      return null;
-    }
-    const posts = await postsService.getAllPostsByBlogId(query, blogId);
-    return posts;
+
+    return Boolean(blog);
   },
 };

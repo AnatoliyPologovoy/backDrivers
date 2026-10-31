@@ -10,6 +10,8 @@ import { Post, PostView } from '../../../post/types/post';
 import { PostInput, PostQuery } from '../../../post/types/post.input.dto';
 import { postsService } from '../../../post/aplication/posts.service';
 import { PostOutData } from '../../../post/types/post.output';
+import { getQueryWithDefault } from '../../../core/utils/getQueryWithDefault';
+import { postsQueryRepositories } from '../../../post/repositories/posts.query.repositories';
 
 export const getAllBlogs = async (
   // ParsedQs из express не совместим с BlogQuery, поэтому приводим query к доменному типу
@@ -111,17 +113,22 @@ export const getAllPostsByBlogId = async (
   res: Response,
 ) => {
   try {
-    const defaultData = matchedData(req);
-    const query = { ...req.query, ...defaultData } as PostQuery;
-    const posts = await blogsService.getAllPostsByBlogId(
+    const query = getQueryWithDefault<PostQuery>(req);
+
+    const isHasBlog = await blogsService.getAllPostsByBlogId(
       query,
       req.params.blogid,
     );
-    if (posts) {
-      res.status(HTTP_STATUS.OK).send(posts);
-    } else {
+    if (!isHasBlog) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND);
     }
+
+    const posts = await postsQueryRepositories.findAllPostsByBlogId(
+      query,
+      req.params.blogid,
+    );
+
+    res.status(HTTP_STATUS.OK).send(posts);
   } catch {
     return res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }

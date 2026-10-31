@@ -2,7 +2,7 @@ import { PostOutData, PostRepoData } from '../../types/post.output';
 import { mapToPostsViewModel } from './mapToPostsViewModel';
 import { PostQuery } from '../../types/post.input.dto';
 
-export const mapToBlogsPaginationModel = (
+export const mapToPostPaginationModel = (
   query: PostQuery,
   postRepoData: PostRepoData,
 ): PostOutData => {

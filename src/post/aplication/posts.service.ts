@@ -1,12 +1,12 @@
 import { postsRepositories } from '../repositories/posts.repositories';
 import { mapToPostsViewModel } from '../routers/mappers/mapToPostsViewModel';
 import { PostInput, PostQuery } from '../types/post.input.dto';
-import { mapToBlogsPaginationModel } from '../routers/mappers/mapToPostPaginationModel';
+import { mapToPostPaginationModel } from '../routers/mappers/mapToPostPaginationModel';
 
 export const postsService = {
   async getAllPosts(query: PostQuery) {
     const postRepoData = await postsRepositories.findAllPosts(query);
-    const postOutData = mapToBlogsPaginationModel(query, postRepoData);
+    const postOutData = mapToPostPaginationModel(query, postRepoData);
     return postOutData;
   },
 
@@ -15,7 +15,7 @@ export const postsService = {
       query,
       blogId,
     );
-    const postOutData = mapToBlogsPaginationModel(query, postRepoData);
+    const postOutData = mapToPostPaginationModel(query, postRepoData);
     return postOutData;
   },
 
